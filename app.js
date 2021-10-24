@@ -99,10 +99,12 @@ app.get("/redis", (req, res) => {
 
 // Clear all caching memories
 app.get("/redis/clear", (req, res) => {
-  myRedis.flushall();
-
-  res.status(200).send({
-    status: "good",
-    msg: "Successfuly clear all cache memories",
+  myRedis.flushall((err, data) => {
+    if (data) {
+      res.status(200).send({
+        status: "good",
+        msg: "Successfuly clear all cache memories",
+      });
+    }
   });
 });
