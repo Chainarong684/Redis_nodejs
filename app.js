@@ -58,8 +58,8 @@ app.get("/redis", (req, res) => {
         });
         console.log(err);
       } else if (data) {
-        const rdData = JSON.parse(data)
-        console.log(typeof rdData, "Get Redis");
+        const rdData = JSON.parse(data);
+        console.log("Get Redis");
         res.status(200).send({
           status: "good",
           msg: rdData,

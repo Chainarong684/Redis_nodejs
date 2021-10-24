@@ -1,8 +1,10 @@
-# Non caching
+### Non caching
 GET http://localhost:3000/noredis HTTP/1.1
 
-# Caching
+
+### Caching
 GET http://localhost:3000/redis HTTP/1.1
 
-# Clear
+
+### Clear
 GET http://localhost:3000/redis/clear HTTP/1.1
