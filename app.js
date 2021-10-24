@@ -32,7 +32,7 @@ app.get("/", (req, res) => {
   );
 });
 
-// Request with non cache
+// Request with non caching
 app.get("/noredis", (req, res) => {
   const username = req.query.username || "chainarong684";
   const url = `https://api.github.com/users/${username}`;
@@ -47,13 +47,57 @@ app.get("/noredis", (req, res) => {
     });
 });
 
-// Request with cache
+// Request with caching
 app.get("/redis", (req, res) => {
-  console.log(myRedis);
-  res.send("Hello");
+  if (myRedis.connected) {
+    myRedis.get("rdUsername", (err, data) => {
+      if (err) {
+        res.status(500).send({
+          status: "bad",
+          msg: err,
+        });
+        console.log(err);
+      } else if (data) {
+        const rdData = JSON.parse(data)
+        console.log(typeof rdData, "Get Redis");
+        res.status(200).send({
+          status: "good",
+          msg: rdData,
+        });
+      } else {
+        const username = req.query.username || "chainarong684";
+        const url = `https://api.github.com/users/${username}`;
+
+        axios
+          .get(url)
+          .then((result) => {
+            const fetchData = result.data;
+
+            myRedis.set("rdUsername", JSON.stringify(fetchData), (err, data) => {
+              if (err) {
+                res.status(500).send({
+                  status: "bad",
+                  msg: err,
+                });
+              } else {
+                res.status(200).send({
+                  status: "good",
+                  msg: fetchData,
+                });
+              }
+
+              console.log("Set Redis");
+            });
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+    });
+  }
 });
 
-// Clear all cache memories
+// Clear all caching memories
 app.get("/redis/clear", (req, res) => {
   myRedis.flushall();
 
