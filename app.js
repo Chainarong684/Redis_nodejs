@@ -12,10 +12,10 @@ app.use(express.urlencoded({ extended: true }));
 
 // Redis connect default port: 6379
 const myRedis = redis.createClient();
-myRedis.on("error", () => {
-  console.log("Redis Connection failed");
+myRedis.on("error", (err) => {
+  console.log("Redis Connection failed " + err);
 });
-myRedis.on("connect", (err, data) => {
+myRedis.on("connect", () => {
   console.log("Redis connected");
 });
 
